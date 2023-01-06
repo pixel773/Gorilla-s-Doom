@@ -29,3 +29,5 @@ There are 13 unique events that come with the mod.
 | Small scale | Makes the player small | Scale |
 | Normal scale | Makes the player their normal size | Scale |
 | Large scale | Makes the player big | Scale |
+| Hidden Forest Objects | Disables Alot Of forests Objects | Object |
+| Visble Forest Objects | Enables Alot Of forests Objects | Object |
