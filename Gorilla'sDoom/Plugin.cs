@@ -179,7 +179,7 @@ namespace GorillasDoom
 
         [ModdedGamemodeJoin] internal void OnJoin(string gamemode)
         {
-            if (gamemode.Contains("gorillasdoom") || gamemode.Contains("gorillasdoomcasual"))
+            if ((gamemode.Contains("gorillasdoom") || gamemode.Contains("gorillasdoomcasual")) && Photon.Pun.PhotonNetwork.CurrentRoom.IsVisible)
             {
                 InRoom = true;
                 Manager.ManageWatch(false);
