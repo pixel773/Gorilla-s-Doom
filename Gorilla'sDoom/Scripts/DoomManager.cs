@@ -64,7 +64,7 @@ namespace GorillasDoom.Scripts
         public void ManageWatch(bool link)
         {
             if (tempWatch == null) tempWatch = new GameObject("WatchTemp");
-            if (link)
+            if (link && watch != null)
             {
                 GorillaTagger.Instance.offlineVRRig.huntComputer = watch;
                 watch.GetComponentInChildren<GorillaHuntComputer>().enabled = true;
