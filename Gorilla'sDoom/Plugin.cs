@@ -5,8 +5,9 @@ using UnityEngine;
 using Utilla;
 using GorillasDoom.Scripts;
 using GorillaNetworking;
+using HarmonyLib;
 
-namespace Gorilla_sDoom
+namespace GorillasDoom
 {
     /// <summary>
     /// This is your mod's main class.
@@ -20,8 +21,10 @@ namespace Gorilla_sDoom
     [BepInPlugin(PluginInfo.GUID, PluginInfo.Name, PluginInfo.Version)]
     public class Plugin : BaseUnityPlugin
     {
+        public static Plugin Instance { get; private set; } 
         public DoomManager Manager { get; private set; }
         public bool InRoom { get; private set; }
+        public bool inForest { get; private set; }
 
         // Timers
         private float timeUntilNextTimer = 5f;
@@ -41,8 +44,6 @@ namespace Gorilla_sDoom
         private GameObject slide;
         private GameObject christmastree_prefab;
         private GameObject newTreehouse;
-
-        private bool inForest;
 
         //I wasted 15 mins doing this :O
         private GameObject flatpanel5;
@@ -98,15 +99,20 @@ namespace Gorilla_sDoom
 
         internal void Start()
         {
+            Instance = this;
+
             Manager = new DoomManager();
+            new Harmony(PluginInfo.GUID).PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
             Events.GameInitialized += OnGameInitialized;
         }
 
-        void OnDisable()
+        #region Patch
+        [HarmonyPatch(typeof(VRRig), "SharedStart")]
+        public class Patch
         {
-            HarmonyPatches.RemoveHarmonyPatches();
-            Manager.ResetGame();
+            public static void Postfix(VRRig __instance) => __instance.gameObject.AddComponent<DoomScaler>().playerRig = __instance;
         }
+        #endregion
 
         private void OnGameInitialized(object sender, EventArgs e)
         {
