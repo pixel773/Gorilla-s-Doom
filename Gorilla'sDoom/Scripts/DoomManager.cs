@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
-using GorillaLocomotion;
+using Photon.Pun;
 using System.Collections.Generic;
+using ExitGames.Client.Photon;
+using Player = GorillaLocomotion.Player;
 
 namespace GorillasDoom.Scripts
 {
@@ -18,6 +20,10 @@ namespace GorillasDoom.Scripts
 
         public void SetScale(float scale, bool isSmall)
         {
+            Hashtable customProperties = new Hashtable { { "DoomPlayerSize", scale.ToString() } };
+
+            PhotonNetwork.LocalPlayer?.SetCustomProperties(customProperties);
+
             Player.Instance.TryGetComponent(out SizeManager sizeManager);
             if (isSmall)
             {
