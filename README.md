@@ -19,15 +19,15 @@ There are 13 unique events that come with the mod.
 | Hidden trees | Disables all of the trees | Object |
 | Hidden floor | Disables the entire floor | Object |
 | Hidden walls | Disables all of the walls | Object |
+| Hidden forest objects | Disables several forest objects | Object |
+| Visble trees | Enables all of the trees | Object |
+| Visble floor | Enables the entire floor | Object |
+| Visble walls | Enables all of the walls | Object |
+| Visble forest objects | Enables several forest objects | Object |
 | Stunned | Stuns the player for 10-15 seconds | Stun |
 | Minor fling | Flings the player with a little force | Fling |
 | Major fling | Flings the player with a large force | Fling |
 | Faster speed | Increases the player's speed | Speed |
-| Visble trees | Enables all of the trees | Object |
-| Visble floor | Enables the entire floor | Object |
-| Visble walls | Enables all of the walls | Object |
 | Small scale | Makes the player small | Scale |
 | Normal scale | Makes the player their normal size | Scale |
 | Large scale | Makes the player big | Scale |
-| Hidden Forest Objects | Disables Alot Of forests Objects | Object |
-| Visble Forest Objects | Enables Alot Of forests Objects | Object |
