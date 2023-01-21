@@ -7,6 +7,6 @@
     {
         public const string GUID = "com.mrbanana.gorillatag.gorillasdoom";
         public const string Name = "GorillasDoom";
-        public const string Version = "1.1.0";
+        public const string Version = "1.0.2";
     }
 }
