@@ -5,6 +5,7 @@ using UnityEngine;
 using Utilla;
 using GorillasDoom.Scripts;
 using GorillaNetworking;
+using GorillaLocomotion;
 
 namespace Gorilla_sDoom
 {
@@ -22,6 +23,7 @@ namespace Gorilla_sDoom
     {
         public DoomManager Manager { get; private set; }
         public bool InRoom { get; private set; }
+        public Player GorillaPlayer;
 
         // Timers
         private float timeUntilNextTimer = 5f;
@@ -37,24 +39,10 @@ namespace Gorilla_sDoom
         private GameObject walls;
         private GameObject campgroundstructure;
         private GameObject SoundPostForest;
-        private GameObject campfire;
         private GameObject slide;
-        private GameObject christmastree_prefab;
         private GameObject newTreehouse;
 
         private bool inForest;
-
-        //I wasted 15 mins doing this :O
-        private GameObject flatpanel5;
-        private GameObject flatpanel9;
-        private GameObject flatpanel10;
-        private GameObject flatpanel11;
-        private GameObject flatpanel12;
-        private GameObject flatpanel13;
-        private GameObject flatpanel14;
-        private GameObject flatpanel15;
-        private GameObject flatpanel16;
-        private GameObject flatpanel17;
 
         private readonly List<string> eventText = new List<string>()
         {
@@ -65,15 +53,14 @@ namespace Gorilla_sDoom
             "stunned",
             "minor fling",
             "major fling",
-            "faster speed",
+            "damage",
+            "repair",
             "visible trees",
             "visible floor",
             "visible walls",
             "small scale",
             "normal scale",
             "large scale",
-            "hidden forest objects",
-            "visible forest objects"
         };
 
         public Dictionary<string, bool> isGood = new Dictionary<string, bool>()
@@ -85,15 +72,14 @@ namespace Gorilla_sDoom
             {"stunned", false },
             {"minor fling", false },
             {"major fling", false },
-            {"faster speed", true },
+            {"damage", false },
+            {"repair", true},
             {"visible trees", true },
             {"visible floor", true },
             {"visible walls", true },
             {"small scale", false },
             {"normal scale", true },
             {"large scale", true },
-            {"hidden forest objects", false },
-            {"visible forest objects", true }
         };
 
         internal void Start()
@@ -115,23 +101,8 @@ namespace Gorilla_sDoom
             trees = GameObject.Find("SmallTrees");
             campgroundstructure = GameObject.Find("campgroundstructure");
             SoundPostForest = GameObject.Find("SoundPostForest");
-            campfire = GameObject.Find("campfire");
             slide = GameObject.Find("slide");
-            christmastree_prefab = GameObject.Find("christmastree_prefab");
             newTreehouse = GameObject.Find("newTreehouse (1)");
-
-
-            //I wasted 15 mins doing this :O
-            flatpanel5 = GameObject.Find("flatpanel(5)");
-            flatpanel9 = GameObject.Find("flatpanel(9)");
-            flatpanel10 = GameObject.Find("flatpanel(10)");
-            flatpanel11 = GameObject.Find("flatpanel(11)");
-            flatpanel12 = GameObject.Find("flatpanel(12)");
-            flatpanel13 = GameObject.Find("flatpanel(13)");
-            flatpanel14 = GameObject.Find("flatpanel(14)");
-            flatpanel15 = GameObject.Find("flatpanel(15)");
-            flatpanel16 = GameObject.Find("flatpanel(16)");
-            flatpanel17 = GameObject.Find("flatpanel(17)");
         }
 
         internal void Update()
@@ -194,63 +165,67 @@ namespace Gorilla_sDoom
                     Manager.FlingPlayer(new System.Random().Next(0, 2) == 0 ? 2 : -2);
                     break;
                 case 7:
-                    Manager.EnhanceSpeed(8, 1.5f);
-                    break;
-                case 8:
-                    Manager.SetItem(trees, true);
-                    break;
-                case 9:
-                    Manager.SetItem(floor, true);
-                    break;
-                case 10:
-                    Manager.SetItem(walls, true);
-                    break;
-                case 11:
-                    Manager.SetScale(0.5f, true);
-                    break;
-                case 12:
-                    Manager.SetScale(1, false);
-                    break;
-                case 13:
-                    Manager.SetScale(2, true);
-                    break;
-                case 14:
+                    Manager.SetItem(walls, false);
+                    Manager.SetItem(floor, false);
+                    Manager.SetItem(trees, false);
                     Manager.SetItem(slide, false);
-                    Manager.SetItem(campfire, false);
                     Manager.SetItem(campgroundstructure, false);
                     Manager.SetItem(SoundPostForest, false);
-                    Manager.SetItem(christmastree_prefab, false);
                     Manager.SetItem(newTreehouse, false);
-                    Manager.SetItem(flatpanel5, false);
-                    Manager.SetItem(flatpanel9, false);
-                    Manager.SetItem(flatpanel10, false);
-                    Manager.SetItem(flatpanel11, false);
-                    Manager.SetItem(flatpanel12, false);
-                    Manager.SetItem(flatpanel13, false);
-                    Manager.SetItem(flatpanel14, false);
-                    Manager.SetItem(flatpanel15, false);
-                    Manager.SetItem(flatpanel16, false);
-                    Manager.SetItem(flatpanel17, false);
-                    break;
+                    GameObject.Find("Snowman_Prefab").SetActive(false);
+                    GameObject.Find("lamp (15)").SetActive(false);
+                    GameObject.Find("lamp (16)").SetActive(false);
+                    GameObject.Find("lamp (17)").SetActive(false);
+                    GameObject.Find("lamp (18)").SetActive(false);
+                    GameObject.Find("lamp (19)").SetActive(false);
+                    GameObject.Find("lamp (20)").SetActive(false);
+                    GameObject.Find("lamppost (4)").SetActive(false);
+                    GameObject.Find("lamppost (5)").SetActive(false);
+                    GameObject.Find("lamppost (6)").SetActive(false);
+                    GameObject.Find("lamp (21)").SetActive(false);
+                    GameObject.Find("wallclimb").SetActive(false);
+                    GameObject.Find("roof tiles snow").SetActive(false);
 
-                case 15:
+                    break;
+                case 8:
+                    Manager.SetItem(walls, true);
+                    Manager.SetItem(floor, true);
+                    Manager.SetItem(trees, true);
                     Manager.SetItem(slide, true);
-                    Manager.SetItem(campfire, true);
                     Manager.SetItem(campgroundstructure, true);
                     Manager.SetItem(SoundPostForest, true);
-                    Manager.SetItem(christmastree_prefab, true);
                     Manager.SetItem(newTreehouse, true);
-
-                    Manager.SetItem(flatpanel5, true);
-                    Manager.SetItem(flatpanel9, true);
-                    Manager.SetItem(flatpanel10, true);
-                    Manager.SetItem(flatpanel11, true);
-                    Manager.SetItem(flatpanel12, true);
-                    Manager.SetItem(flatpanel13, true);
-                    Manager.SetItem(flatpanel14, true);
-                    Manager.SetItem(flatpanel15, true);
-                    Manager.SetItem(flatpanel16, true);
-                    Manager.SetItem(flatpanel17, true);
+                    GameObject.Find("Snowman_Prefab").SetActive(true);
+                    GameObject.Find("lamp (15)").SetActive(true);
+                    GameObject.Find("lamp (16)").SetActive(true);
+                    GameObject.Find("lamp (17)").SetActive(true);
+                    GameObject.Find("lamp (18)").SetActive(true);
+                    GameObject.Find("lamp (19)").SetActive(true);
+                    GameObject.Find("lamp (20)").SetActive(true);
+                    GameObject.Find("lamppost (4)").SetActive(true);
+                    GameObject.Find("lamppost (5)").SetActive(true);
+                    GameObject.Find("lamppost (6)").SetActive(true);
+                    GameObject.Find("lamp (21)").SetActive(true);
+                    GameObject.Find("wallclimb").SetActive(true);
+                    GameObject.Find("roof tiles snow").SetActive(true);
+                    break;
+                case 9:
+                    Manager.SetItem(trees, true);
+                    break;
+                case 10:
+                    Manager.SetItem(floor, true);
+                    break;
+                case 11:
+                    Manager.SetItem(walls, true);
+                    break;
+                case 12:
+                    Manager.SetScale(0.5f, true);
+                    break;
+                case 13:
+                    Manager.SetScale(1, false);
+                    break;
+                case 14:
+                    Manager.SetScale(2, true);
                     break;
             }
         }
@@ -279,7 +254,7 @@ namespace Gorilla_sDoom
                 isCountingDown = false;
                 inForest = PhotonNetworkController.Instance.currentJoinTrigger.gameModeName == "forest";
                 if (inForest) Invoke("ReadjustTimer", 0);
-                else Manager.SetWatchText("PLEASE GO IN THE FOREST MAP.");
+                else Manager.SetWatchText("PLEASE GO IN THE FOREST MAP. OTHER MAPS ARE NOT SUPPORTED YET!");
             }
         }
 
