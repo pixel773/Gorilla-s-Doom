@@ -1,14 +1,22 @@
-﻿using UnityEngine;
+using UnityEngine;
 using GorillaLocomotion;
 using System.Collections.Generic;
+using Gorilla_sDoom;
 
 namespace GorillasDoom.Scripts
 {
     public class DoomManager
     {
+        public Plugin Plugin { get; private set; }
+
         public List<GameObject> affectedObjects = new List<GameObject>();
         public GameObject tempWatch;
         public GameObject watch;
+
+        void Awake()
+        {
+            Plugin = new Plugin();
+        }
 
         public void SetItem(GameObject obj, bool enabled)
         {
@@ -22,7 +30,7 @@ namespace GorillasDoom.Scripts
             if (isSmall)
             {
                 sizeManager.enabled = false;
-                Player.Instance.scale = scale; // I know you can go down to 0.03 and still play just fine it's just that I think it's a bit too small
+                Player.Instance.scale = scale; // I know you can go down to 0.03 and still play just fine it's just that I think it's a bit too small <--- so true
                 return;
             }
 
@@ -36,8 +44,19 @@ namespace GorillasDoom.Scripts
                 GameObject objectFromIndex = affectedObjects[objectIndex];
                 objectFromIndex.SetActive(true);
             }
-
-            EnhanceSpeed(1, 1);
+            GameObject.Find("Snowman_Prefab").SetActive(true);
+            GameObject.Find("lamp (15)").SetActive(true);
+            GameObject.Find("lamp (16)").SetActive(true);
+            GameObject.Find("lamp (17)").SetActive(true);
+            GameObject.Find("lamp (18)").SetActive(true);
+            GameObject.Find("lamp (19)").SetActive(true);
+            GameObject.Find("lamp (20)").SetActive(true);
+            GameObject.Find("lamppost (4)").SetActive(true);
+            GameObject.Find("lamppost (5)").SetActive(true);
+            GameObject.Find("lamppost (6)").SetActive(true);
+            GameObject.Find("lamp (21)").SetActive(true);
+            GameObject.Find("wallclimb").SetActive(true);
+            GameObject.Find("roof tiles snow").SetActive(true);
             ManageWatch(true);
             SetScale(1, false);
             ClearPlayer();
@@ -55,16 +74,10 @@ namespace GorillasDoom.Scripts
             GorillaTagger.Instance.ApplyStatusEffect(GorillaTagger.StatusEffect.Frozen, slowTime);
         }
 
-        public void EnhanceSpeed(float speedMulitplier, float jumpMulitplier)
-        {
-            Player.Instance.maxJumpSpeed *= speedMulitplier;
-            Player.Instance.jumpMultiplier *= jumpMulitplier;
-        }
-
         public void ManageWatch(bool link)
         {
             if (tempWatch == null) tempWatch = new GameObject("WatchTemp");
-            if (link)
+            if (link && watch != null)
             {
                 GorillaTagger.Instance.offlineVRRig.huntComputer = watch;
                 watch.GetComponentInChildren<GorillaHuntComputer>().enabled = true;
@@ -93,7 +106,7 @@ namespace GorillasDoom.Scripts
 
         public void FlingPlayer(float flingMulitplier)
         {
-            Rigidbody playerBody = Player.Instance.GetComponent<Rigidbody>();   
+            Rigidbody playerBody = Player.Instance.GetComponent<Rigidbody>();
             playerBody.AddForce(new Vector3(flingMulitplier * 2, Mathf.Abs(flingMulitplier) * 10, flingMulitplier * 2), ForceMode.VelocityChange);
         }
     }
