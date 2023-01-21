@@ -41,6 +41,9 @@ namespace Gorilla_sDoom
         private GameObject SoundPostForest;
         private GameObject slide;
         private GameObject newTreehouse;
+        private GameObject SnowMan;
+        private GameObject Walljump;
+        private GameObject Roof;
 
         private bool inForest;
 
@@ -103,6 +106,9 @@ namespace Gorilla_sDoom
             SoundPostForest = GameObject.Find("SoundPostForest");
             slide = GameObject.Find("slide");
             newTreehouse = GameObject.Find("newTreehouse (1)");
+            Walljump = GameObject.Find("wallclimb");
+            Roof = GameObject.Find("roof tiles snow");
+            SnowMan = GameObject.Find("Snowman_Prefab");
         }
 
         internal void Update()
@@ -172,19 +178,9 @@ namespace Gorilla_sDoom
                     Manager.SetItem(campgroundstructure, false);
                     Manager.SetItem(SoundPostForest, false);
                     Manager.SetItem(newTreehouse, false);
-                    GameObject.Find("Snowman_Prefab").SetActive(false);
-                    GameObject.Find("lamp (15)").SetActive(false);
-                    GameObject.Find("lamp (16)").SetActive(false);
-                    GameObject.Find("lamp (17)").SetActive(false);
-                    GameObject.Find("lamp (18)").SetActive(false);
-                    GameObject.Find("lamp (19)").SetActive(false);
-                    GameObject.Find("lamp (20)").SetActive(false);
-                    GameObject.Find("lamppost (4)").SetActive(false);
-                    GameObject.Find("lamppost (5)").SetActive(false);
-                    GameObject.Find("lamppost (6)").SetActive(false);
-                    GameObject.Find("lamp (21)").SetActive(false);
-                    GameObject.Find("wallclimb").SetActive(false);
-                    GameObject.Find("roof tiles snow").SetActive(false);
+                    Manager.SetItem(SnowMan, false);
+                    Manager.SetItem(Walljump, false);
+                    Manager.SetItem(Roof, false);
 
                     break;
                 case 8:
@@ -195,19 +191,9 @@ namespace Gorilla_sDoom
                     Manager.SetItem(campgroundstructure, true);
                     Manager.SetItem(SoundPostForest, true);
                     Manager.SetItem(newTreehouse, true);
-                    GameObject.Find("Snowman_Prefab").SetActive(true);
-                    GameObject.Find("lamp (15)").SetActive(true);
-                    GameObject.Find("lamp (16)").SetActive(true);
-                    GameObject.Find("lamp (17)").SetActive(true);
-                    GameObject.Find("lamp (18)").SetActive(true);
-                    GameObject.Find("lamp (19)").SetActive(true);
-                    GameObject.Find("lamp (20)").SetActive(true);
-                    GameObject.Find("lamppost (4)").SetActive(true);
-                    GameObject.Find("lamppost (5)").SetActive(true);
-                    GameObject.Find("lamppost (6)").SetActive(true);
-                    GameObject.Find("lamp (21)").SetActive(true);
-                    GameObject.Find("wallclimb").SetActive(true);
-                    GameObject.Find("roof tiles snow").SetActive(true);
+                    Manager.SetItem(SnowMan, true);
+                    Manager.SetItem(Walljump, true);
+                    Manager.SetItem(Roof, true);
                     break;
                 case 9:
                     Manager.SetItem(trees, true);
