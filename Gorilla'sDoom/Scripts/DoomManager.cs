@@ -44,19 +44,6 @@ namespace GorillasDoom.Scripts
                 GameObject objectFromIndex = affectedObjects[objectIndex];
                 objectFromIndex.SetActive(true);
             }
-            GameObject.Find("Snowman_Prefab").SetActive(true);
-            GameObject.Find("lamp (15)").SetActive(true);
-            GameObject.Find("lamp (16)").SetActive(true);
-            GameObject.Find("lamp (17)").SetActive(true);
-            GameObject.Find("lamp (18)").SetActive(true);
-            GameObject.Find("lamp (19)").SetActive(true);
-            GameObject.Find("lamp (20)").SetActive(true);
-            GameObject.Find("lamppost (4)").SetActive(true);
-            GameObject.Find("lamppost (5)").SetActive(true);
-            GameObject.Find("lamppost (6)").SetActive(true);
-            GameObject.Find("lamp (21)").SetActive(true);
-            GameObject.Find("wallclimb").SetActive(true);
-            GameObject.Find("roof tiles snow").SetActive(true);
             ManageWatch(true);
             SetScale(1, false);
             ClearPlayer();
