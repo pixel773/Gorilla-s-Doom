@@ -91,10 +91,18 @@ namespace Gorilla_sDoom
             Events.GameInitialized += OnGameInitialized;
         }
 
+        bool IsEnabled;
         void OnDisable()
         {
             HarmonyPatches.RemoveHarmonyPatches();
             Manager.ResetGame();
+            IsEnabled = false;
+        }
+
+        void OnEnable()
+        {
+            HarmonyPatches.ApplyHarmonyPatches();
+            IsEnabled = false;
         }
 
         private void OnGameInitialized(object sender, EventArgs e)
@@ -232,21 +240,25 @@ namespace Gorilla_sDoom
         [ModdedGamemodeJoin]
         internal void OnJoin(string gamemode)
         {
-            if ((gamemode.Contains("gorillasdoom") || gamemode.Contains("gorillasdoomcasual")) && Photon.Pun.PhotonNetwork.CurrentRoom.IsVisible)
+            if(IsEnabled == true)
             {
-                InRoom = true;
-                Manager.ManageWatch(false);
-                Manager.watch.SetActive(true);
-                isCountingDown = false;
-                inForest = PhotonNetworkController.Instance.currentJoinTrigger.gameModeName == "forest";
-                if (inForest) Invoke("ReadjustTimer", 0);
-                else Manager.SetWatchText("PLEASE GO IN THE FOREST MAP. OTHER MAPS ARE NOT SUPPORTED YET!");
+                if ((gamemode.Contains("gorillasdoom") || gamemode.Contains("gorillasdoomcasual")) && Photon.Pun.PhotonNetwork.CurrentRoom.IsVisible)
+                {
+                    InRoom = true;
+                    Manager.ManageWatch(false);
+                    Manager.watch.SetActive(true);
+                    isCountingDown = false;
+                    inForest = PhotonNetworkController.Instance.currentJoinTrigger.gameModeName == "forest";
+                    if (inForest) Invoke("ReadjustTimer", 0);
+                    else Manager.SetWatchText("PLEASE GO IN THE FOREST MAP");
+                }
             }
         }
 
         [ModdedGamemodeLeave]
         internal void OnLeave(string gamemode)
         {
+            Manager.SetScale(1, false);
             InRoom = false;
             Manager.ResetGame();
         }
