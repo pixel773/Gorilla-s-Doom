@@ -1,110 +1,100 @@
-using BepInEx;
-using System;
-using System.ComponentModel;
 using UnityEngine;
-using Utilla;
-using Player = GorillaLocomotion.Player;
-using BepInEx.Configuration;
-using System.IO;
-using System.Linq;
+using GorillaLocomotion;
 using System.Collections.Generic;
+using Gorilla_sDoom;
 
-namespace GorillaGoSmallGorillaGoBig
+namespace GorillasDoom.Scripts
 {
-    /// <summary>
-    /// This is your mod's main class.
-    /// </summary>
-
-    /* This attribute tells Utilla to look for [ModdedGameJoin] and [ModdedGameLeave] */
-    [ModdedGamemode]
-    [BepInDependency("org.legoandmars.gorillatag.utilla", "1.6.7")]
-    [BepInPlugin(PluginInfo.GUID, PluginInfo.Name, PluginInfo.Version)]
-    [Description("HauntedModMenu")]
-    public class Plugin : BaseUnityPlugin
+    public class DoomManager
     {
-        public static Plugin Instance { get; private set; }
-        public bool IsEnabled;
-        public bool inRoom = false;
-        public static ConfigEntry<float> Size;
+        public Plugin Plugin { get; private set; }
 
-        void Start()
+        public List<GameObject> affectedObjects = new List<GameObject>();
+        public GameObject tempWatch;
+        public GameObject watch;
+
+        void Awake()
         {
-            /* A lot of Gorilla Tag systems will not be set up when start is called /*
-			/* Put code in OnGameInitialized to avoid null references */
-
-            Utilla.Events.GameInitialized += OnGameInitialized;
+            Plugin = new Plugin();
         }
 
-        public void SetScale(float scale, bool isSmall) //This code was made by Dev(they/them). and is part of the Gorilla's Doom mod
+        public void SetItem(GameObject obj, bool enabled)
+        {
+            if (!affectedObjects.Contains(obj)) affectedObjects.Add(obj);
+            obj.SetActive(enabled);
+        }
+
+        public void SetScale(float scale, bool isSmall)
         {
             Player.Instance.TryGetComponent(out SizeManager sizeManager);
             if (isSmall)
             {
                 sizeManager.enabled = false;
-                Player.Instance.scale = scale;
+                Player.Instance.scale = scale; // I know you can go down to 0.03 and still play just fine it's just that I think it's a bit too small <--- so true
+                return;
             }
-            sizeManager.enabled = true;
+
+            sizeManager.enabled = true; // SizeManager will automatically set the Player's scale variable so no need to set it here if it's going to be overwritten
         }
 
-        void OnEnable()
+        public void ResetGame()
         {
-            /* Set up your mod here */
-            /* Code here runs at the start and whenever your mod is enabled*/
-            HarmonyPatches.ApplyHarmonyPatches();
-            IsEnabled = true;
-
-            if(inRoom == true)
+            for (int objectIndex = 0; objectIndex < affectedObjects.Count; objectIndex++)
             {
-                SetScale(Size.Value, true);
+                GameObject objectFromIndex = affectedObjects[objectIndex];
+                objectFromIndex.SetActive(true);
             }
-            else
-            {
-                SetScale(1, false);
-            }
-        }
-
-        void OnDisable()
-        {
-            /* Undo mod setup here */
-            /* This provides support for toggling mods with ComputerInterface, please implement it :) */
-            /* Code here runs whenever your mod is disabled (including if it disabled on startup)*/
-
-            HarmonyPatches.RemoveHarmonyPatches();
-            IsEnabled = false;
-
+            ManageWatch(true);
             SetScale(1, false);
+            ClearPlayer();
         }
 
-        void OnGameInitialized(object sender, EventArgs e)
+        public void ClearPlayer()
         {
-            var SizeChangeFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "GorillaGoSmall.cfg"), true);
-            Size = SizeChangeFile.Bind("Configuration", "Size", 0.1f, "What size do you want to be?, 0.1 is the normal small scale");
+            GorillaTagger.Instance.ApplyStatusEffect(GorillaTagger.StatusEffect.None, 0);
+            Player.Instance.disableMovement = false;
         }
 
-        /* This attribute tells Utilla to call this method when a modded room is joined */
-        [ModdedGamemodeJoin]
-        public void OnJoin(string gamemode)
+        public void SlowPlayer(int minSpeed, int maxSpeed)
         {
-            /* Activate your mod here */
-            /* This code will run regardless of if the mod is enabled*/
+            float slowTime = new System.Random().Next(minSpeed, maxSpeed + 1);
+            GorillaTagger.Instance.ApplyStatusEffect(GorillaTagger.StatusEffect.Frozen, slowTime);
+        }
 
-            inRoom = true;
-
-            if(IsEnabled == true)
+        public void ManageWatch(bool link)
+        {
+            if (tempWatch == null) tempWatch = new GameObject("WatchTemp");
+            if (link && watch != null)
             {
-                SetScale(Size.Value, true);
+                GorillaTagger.Instance.offlineVRRig.huntComputer = watch;
+                watch.GetComponentInChildren<GorillaHuntComputer>().enabled = true;
+                GorillaHuntComputer localComputer = watch.GetComponentInChildren<GorillaHuntComputer>();
+                localComputer.material.gameObject.SetActive(true);
+                return;
             }
+
+            watch = GorillaTagger.Instance.offlineVRRig.huntComputer;
+            GorillaHuntComputer computer = watch.GetComponentInChildren<GorillaHuntComputer>();
+            computer.enabled = false; // Disabling the component so the Update method can't do anything
+            computer.hat.gameObject.SetActive(false);
+            computer.face.gameObject.SetActive(false);
+            computer.badge.gameObject.SetActive(false);
+            computer.leftHand.gameObject.SetActive(false);
+            computer.rightHand.gameObject.SetActive(false);
+            computer.material.gameObject.SetActive(false);
+            GorillaTagger.Instance.offlineVRRig.huntComputer = tempWatch;
         }
 
-        /* This attribute tells Utilla to call this method when a modded room is left */
-        [ModdedGamemodeLeave]
-        public void OnLeave(string gamemode)
+        public void SetWatchText(string text)
         {
-            /* Deactivate your mod here */
-            /* This code will run regardless of if the mod is enabled*/
+            GorillaHuntComputer computer = watch?.GetComponentInChildren<GorillaHuntComputer>();
+            if (computer != null) computer.text.text = text; // So much "text" it's making my brain hurt
+        }
 
-            inRoom = false;
-            SetScale(1, false);
+        public void FlingPlayer(float flingMulitplier)
+        {
+            Rigidbody playerBody = Player.Instance.GetComponent<Rigidbody>();
+            playerBody.AddForce(new Vector3(flingMulitplier * 2, Mathf.Abs(flingMulitplier) * 10, flingMulitplier * 2), ForceMode.VelocityChange);
         }
     }
 }
